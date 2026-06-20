@@ -36,9 +36,6 @@
         margin: 0;
         padding: 20px;
         background: #0f172a;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
         min-height: 100vh;
         font-family: 'Poppins', sans-serif;
         color: var(--text);
@@ -53,6 +50,7 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
+        margin: 0 auto;
     }
 
     .header {
@@ -202,7 +200,6 @@
         margin-bottom: 20px;
     }
 
-    /* Answer Popup Overlay - 1.5s instant feedback */
     .answer-popup-overlay {
         position: fixed;
         top: 0;
@@ -249,10 +246,8 @@
     }
 
     .answer-popup-content {
-        background: var(--bg-light);
-        border: 3px solid var(--accent);
-        border-radius: 16px;
-        padding: 20px 24px
+        background: var(--card);
+        padding: 32px 24px;
         border-radius: 24px;
         border: 3px solid var(--perfect);
         text-align: center;
@@ -707,7 +702,7 @@
 
     .action-buttons {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 8px;
         margin-top: 16px;
     }
@@ -952,11 +947,8 @@
             font-size: 2rem;
         }
         .popup-filipino {
-        font-size: clamp(1.2rem, 4vw, 1.6rem);
-        font-weight: 700;
-        color: var(--success);
-        animation: fadeInRight 0.5s ease 0.2s backwards;
-    }
+            font-size: 1.4rem;
+        }
     }
 </style>
 </head>
@@ -1028,7 +1020,7 @@
                     <span>Menu</span>
                 </button>
                 <button class="control-btn" id="pauseBtn">
-                    <span class="control-icon">⏸️</span>
+                    <span class="control-icon">⏸</span>
                     <span>Pause</span>
                 </button>
                 <button class="control-btn" id="restartBtn">
@@ -1070,14 +1062,8 @@
                     <span class="ai-dot"></span>
                     <span id="aiText">LINDA WALKER: Nakaabang</span>
                 </div>
-                <span class="turn-indicator" id="turnIndicator">Ikaw muna</span>
-            </div>
-
-            <div class="game-card">
-                <div class="timer-bar" id="timerBar"></div>
-                <div class="round-info">
-                    <span>Round <span id="roundNum">1</span> / 50<span class="mode-badge" id="modeBadge">Basic</span></span>
-                    <span id="timerText">15s</span>
+                <span class="turn-indicator" id="turnIndicator">Ikaw m
+			                    <span id="timerText">15s</span>
                 </div>
 
                 <div class="question-display" id="questionDisplay">
@@ -1088,8 +1074,8 @@
 
                 <div class="action-buttons">
                     <button class="action-btn btn-clue" id="clueBtn">💡 Clue</button>
-                    <button class="action-btn btn-show" id="showBtn">👁️ Answer</button>
-                    <button class="action-btn btn-skip" id="skipBtn">⏭️ Skip</button>
+                    <button class="action-btn btn-show" id="showBtn">👁 Answer</button>
+                    <button class="action-btn btn-skip" id="skipBtn">⏭ Skip</button>
                 </div>
 
                 <div class="result-panel" id="resultPanel">
@@ -1106,13 +1092,12 @@
 
     <div class="pause-overlay" id="pauseOverlay">
         <div class="pause-content">
-            <h2>⏸️ Naka-Pause</h2>
+            <h2>⏸ Naka-Pause</h2>
             <p>Ang game ay naka-pause. Pindutin ang Resume para magpatuloy.</p>
             <button class="start-btn" id="resumeBtn">Resume Game</button>
         </div>
     </div>
 
-    <!-- Answer Popup Overlay - Shows immediately after answer for 1.5s -->
     <div class="answer-popup-overlay" id="answerPopupOverlay">
         <div class="answer-popup-content">
             <div class="popup-linda-text" id="popupLindaText">LINDA: Perfect! 💯</div>
@@ -1124,8 +1109,22 @@
         </div>
     </div>
 
+    <!-- COMMENT SECTION NI LINDA WALKER - MOBILE FRIENDLY -->
+    <div style="width: 100%; max-width: 390px; margin: 60px auto 40px auto; padding: 0 16px; box-sizing: border-box;">
+      <h3 style="color: #6A5ACD; text-align: center; margin-bottom: 20px; font-size: 18px;">
+        💬 Feedback ng mga Batikan
+      </h3>
+      
+      <script src="https://utteranc.es/client.js"
+        repo="ericksonkaiser/B17Quiz-Lindawalker"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </div>
+
 <script>
-    // VERIFIED 150 BAYBAYIN WORDS - 100% ACCURATE SPELLINGS
     const BASIC_WORDS = [
         { baybayin: 'ᜀᜐᜓ', filipino: 'aso', clue: 'Hayop na alaga' },
         { baybayin: 'ᜉᜓᜐ', filipino: 'pusa', clue: 'Hayop na nagngingiyaw' },
@@ -1320,12 +1319,11 @@
         'LINDA: LINDA on top always! 🌟'
     ];
 
-    // LINDA WALKER: 100% PERFECT ACCURACY - NEVER WRONG
     const AI_ACCURACY = 1.0;
     const TOTAL_ROUNDS = 50;
-    const RESULT_DISPLAY_TIME = 5000; // 5 seconds to see result
-    const AI_THINKING_TIME = 5000; // 5 seconds thinking countdown
-    const ANSWER_POPUP_DURATION = 1500; // 1.5 seconds for instant popup
+    const RESULT_DISPLAY_TIME = 5000;
+    const AI_THINKING_TIME = 5000;
+    const ANSWER_POPUP_DURATION = 1500;
 
     let gameState = {
         round: 1,
@@ -1383,6 +1381,8 @@
         resultTitle: document.getElementById('resultTitle'),
         resultBaybayin: document.getElementById('resultBaybayin'),
         resultFilipino: document.getElementById('resultFilipino'),
+        clueBtn:
+		resultFilipino: document.getElementById('resultFilipino'),
         clueBtn: document.getElementById('clueBtn'),
         showBtn: document.getElementById('showBtn'),
         skipBtn: document.getElementById('skipBtn'),
@@ -1425,7 +1425,7 @@
         elements.totalGames.textContent = globalStats.totalGames;
         elements.totalWins.textContent = globalStats.wins;
         elements.totalLosses.textContent = globalStats.losses;
-        const winRate = globalStats.totalGames > 0 ? Math.round((globalStats.wins / globalStats.totalGames) * 100) : 0;
+        const winRate = globalStats.totalGames > 0? Math.round((globalStats.wins / globalStats.totalGames) * 100) : 0;
         elements.winRate.textContent = winRate + '%';
         elements.bestStreak.textContent = globalStats.bestStreak;
         elements.totalCorrect.textContent = globalStats.totalCorrect;
@@ -1433,7 +1433,7 @@
 
     function init() {
         loadStats();
-        
+
         elements.startBtn.addEventListener('click', startGame);
         elements.statsBtn.addEventListener('click', showStats);
         elements.backToMenuBtn.addEventListener('click', backToMenu);
@@ -1459,19 +1459,19 @@
 
     function showAnswerPopup(baybayin, filipino, isCorrect) {
         clearTimeout(gameState.popupTimeout);
-        
+
         elements.popupBaybayin.textContent = baybayin;
         elements.popupFilipino.textContent = filipino;
-        
+
         if (isCorrect) {
             elements.popupLindaText.textContent = 'LINDA: Perfect! 💯';
         } else {
             elements.popupLindaText.textContent = 'Ito ang sagot:';
         }
-        
+
         elements.answerPopupOverlay.classList.add('show');
         elements.answerPopupOverlay.classList.remove('fade-out');
-        
+
         gameState.popupTimeout = setTimeout(() => {
             elements.answerPopupOverlay.classList.add('fade-out');
             setTimeout(() => {
@@ -1541,7 +1541,7 @@
     }
 
     function pauseGame() {
-        if (!gameState.roundActive || !gameState.gameStarted) return;
+        if (!gameState.roundActive ||!gameState.gameStarted) return;
         gameState.isPaused = true;
         clearInterval(gameState.timerInterval);
         clearTimeout(gameState.resultTimeout);
@@ -1563,11 +1563,11 @@
             clearInterval(gameState.timerInterval);
             clearTimeout(gameState.resultTimeout);
             clearTimeout(gameState.popupTimeout);
-            
+
             const name = gameState.playerName;
             const category = gameState.wordCategory;
             const mode = gameState.gameMode;
-            
+
             gameState = {
                 round: 1,
                 playerScore: 0,
@@ -1590,10 +1590,10 @@
                 playerWasWrong: false,
                 popupTimeout: null
             };
-            
+
             const wordPool = getWordsForCategory();
             gameState.shuffledWords = [...wordPool].sort(() => Math.random() - 0.5);
-            
+
             updateScores();
             updateHeaderBadges();
             startNewRound();
@@ -1623,16 +1623,16 @@
         gameState.playerName = name || 'Player';
         elements.playerLabel.textContent = gameState.playerName;
         gameState.gameStarted = true;
-        
+
         elements.startScreen.classList.add('hidden');
         elements.gameContent.classList.remove('hidden');
         elements.statsPage.classList.add('hidden');
-        
+
         updateHeaderBadges();
-        
+
         const wordPool = getWordsForCategory();
         gameState.shuffledWords = [...wordPool].sort(() => Math.random() - 0.5);
-        
+
         setupEventListeners();
         startNewRound();
     }
@@ -1656,8 +1656,8 @@
     function updateTurnHighlights() {
         elements.playerCard.classList.remove('player-active');
         elements.aiCard.classList.remove('ai-active');
-        
-        if (gameState.roundActive && !gameState.isPaused) {
+
+        if (gameState.roundActive &&!gameState.isPaused) {
             if (gameState.isPlayerTurn) {
                 elements.playerCard.classList.add('player-active');
             } else {
@@ -1699,33 +1699,15 @@
 
     function updateQuestionDisplay() {
         elements.questionDisplay.classList.remove('baybayin');
-        
+
         const labels = {
             basic: 'Basic',
             general: 'General',
             hardcore: 'Hardcore'
         };
-        
+
         if (gameState.gameMode === 'baybayin-to-salita') {
             elements.questionDisplay.textContent = gameState.currentWord.baybayin;
-        // Auto-adjust font size for long Baybayin words
-        const baybayinText = gameState.gameMode === 'baybayin-to-salita' 
-            ? gameState.currentWord.baybayin 
-            : gameState.currentWord.filipino;
-        
-        const displayEl = elements.questionDisplay;
-        const charCount = baybayinText.length;
-        
-        if (charCount >= 8) {
-            displayEl.style.fontSize = '1.1rem';
-        } else if (charCount >= 6) {
-            displayEl.style.fontSize = '1.3rem';
-        } else if (charCount >= 4) {
-            displayEl.style.fontSize = '1.5rem';
-        } else {
-            displayEl.style.fontSize = ''; // Reset to CSS default
-        }
-
             elements.questionDisplay.classList.add('baybayin');
             elements.modeBadge.textContent = `Baybayin → ${labels[gameState.wordCategory]}`;
         } else {
@@ -1737,23 +1719,23 @@
     function generateChoices() {
         let correctAnswer, wrongAnswers, allChoices;
         const wordPool = getWordsForCategory();
-        
+
         if (gameState.gameMode === 'baybayin-to-salita') {
             correctAnswer = gameState.currentWord.filipino;
             wrongAnswers = wordPool
-                .filter(w => w.filipino !== correctAnswer)
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 3)
-                .map(w => w.filipino);
-            allChoices = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+               .filter(w => w.filipino!== correctAnswer)
+               .sort(() => Math.random() - 0.5)
+               .slice(0, 3)
+               .map(w => w.filipino);
+            allChoices = [correctAnswer,...wrongAnswers].sort(() => Math.random() - 0.5);
         } else {
             correctAnswer = gameState.currentWord.baybayin;
             wrongAnswers = wordPool
-                .filter(w => w.baybayin !== correctAnswer)
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 3)
-                .map(w => w.baybayin);
-            allChoices = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+               .filter(w => w.baybayin!== correctAnswer)
+               .sort(() => Math.random() - 0.5)
+               .slice(0, 3)
+               .map(w => w.baybayin);
+            allChoices = [correctAnswer,...wrongAnswers].sort(() => Math.random() - 0.5);
         }
 
         elements.choicesGrid.innerHTML = '';
@@ -1773,7 +1755,7 @@
         updateTimerDisplay();
         gameState.timerInterval = setInterval(() => {
             if (gameState.isPaused) return;
-            
+
             gameState.timer--;
             updateTimerDisplay();
 
@@ -1790,7 +1772,7 @@
         const percentage = (gameState.timer / 15) * 100;
         elements.timerBar.style.width = `${percentage}%`;
         elements.timerText.textContent = `${gameState.timer}s`;
-        
+
         if (gameState.timer <= 5) {
             elements.timerBar.style.background = 'var(--error)';
         } else if (gameState.timer <= 10) {
@@ -1802,7 +1784,7 @@
 
     function flashResult(success, title, duration = RESULT_DISPLAY_TIME) {
         elements.resultTitle.textContent = title;
-        elements.resultTitle.style.color = success ? 'var(--success)' : 'var(--error)';
+        elements.resultTitle.style.color = success? 'var(--success)' : 'var(--error)';
         elements.resultBaybayin.textContent = gameState.currentWord.baybayin;
         elements.resultFilipino.textContent = gameState.currentWord.filipino;
         elements.resultPanel.classList.add('show');
@@ -1818,20 +1800,19 @@
     }
 
     function handleAnswer(selected) {
-        if (!gameState.roundActive || !gameState.isPlayerTurn || gameState.isPaused) return;
+        if (!gameState.roundActive ||!gameState.isPlayerTurn || gameState.isPaused) return;
 
-        const correctAnswer = gameState.gameMode === 'baybayin-to-salita' 
-            ? gameState.currentWord.filipino 
+        const correctAnswer = gameState.gameMode === 'baybayin-to-salita'
+           ? gameState.currentWord.filipino
             : gameState.currentWord.baybayin;
-        
+
         const isCorrect = selected === correctAnswer;
         const choices = elements.choicesGrid.querySelectorAll('.choice-btn');
-        
+
         choices.forEach(btn => {
             btn.disabled = true;
         });
 
-        // Show immediate popup with answer
         showAnswerPopup(gameState.currentWord.baybayin, gameState.currentWord.filipino, isCorrect);
 
         if (isCorrect) {
@@ -1843,18 +1824,18 @@
                 globalStats.bestStreak = gameState.streak;
             }
             saveStats();
-            
+
             choices.forEach(btn => {
                 if (btn.textContent === selected) {
                     btn.classList.add('correct');
                 }
             });
-            
+
             flashResult(true, '🎯 Tama!');
         } else {
             gameState.streak = 0;
             gameState.playerWasWrong = true;
-            
+
             choices.forEach(btn => {
                 if (btn.textContent === selected) {
                     btn.classList.add('wrong');
@@ -1863,7 +1844,7 @@
                     btn.classList.add('correct');
                 }
             });
-            
+
             flashResult(false, '❌ Mali! Ito ang tamang sagot:');
         }
 
@@ -1873,14 +1854,13 @@
     function handleTimeout() {
         gameState.streak = 0;
         gameState.playerWasWrong = true;
-        
-        const correctAnswer = gameState.gameMode === 'baybayin-to-salita' 
-            ? gameState.currentWord.filipino 
+
+        const correctAnswer = gameState.gameMode === 'baybayin-to-salita'
+           ? gameState.currentWord.filipino
             : gameState.currentWord.baybayin;
-        
-        // Show immediate popup
+
         showAnswerPopup(gameState.currentWord.baybayin, gameState.currentWord.filipino, false);
-        
+
         highlightCorrectAnswer(correctAnswer);
         flashResult(false, '⏰ Time\'s up! Ito ang tamang sagot:');
         endPlayerTurnWithDelay();
@@ -1893,10 +1873,10 @@
         elements.clueBtn.disabled = true;
         elements.showBtn.disabled = true;
         elements.skipBtn.disabled = true;
-        
+
         updateScores();
         updateTurnHighlights();
-        
+
         gameState.resultTimeout = setTimeout(() => {
             if (!gameState.isPaused) {
                 aiTurn();
@@ -1907,12 +1887,11 @@
     function aiTurn() {
         updateTurnIndicator();
         updateTurnHighlights();
-        
-        // FIX: Skip LINDA if player answered correctly
+
         if (!gameState.playerWasWrong) {
             elements.aiText.textContent = 'Nice! Next question...';
             elements.resultPanel.classList.remove('show');
-            
+
             gameState.resultTimeout = setTimeout(() => {
                 if (!gameState.isPaused) {
                     gameState.round++;
@@ -1920,34 +1899,32 @@
                     elements.aiCard.classList.remove('ai-active');
                     startNewRound();
                 }
-            }, 800); // Faster transition when player is correct
+            }, 800);
             return;
         }
-        
+
         let countdown = 5;
         elements.aiStatus.classList.add('ai-thinking');
         elements.resultPanel.classList.remove('show');
-        
+
         const countdownInterval = setInterval(() => {
             elements.aiText.innerHTML = `LINDA WALKER is dominating... <span class="ai-countdown">${countdown}s</span>`;
             countdown--;
-            
+
             if (countdown < 0) {
                 clearInterval(countdownInterval);
-                
-                // LINDA WALKER: 100% PERFECT - ALWAYS CORRECT
+
                 gameState.aiScore++;
-                
-                // Show popup for LINDA's answer
+
                 showAnswerPopup(gameState.currentWord.baybayin, gameState.currentWord.filipino, true);
-                
+
                 const taunt = AI_TAUNTS_CORRECT[Math.floor(Math.random() * AI_TAUNTS_CORRECT.length)];
                 flashResult(true, `LINDA: Perfect! 💯`, RESULT_DISPLAY_TIME);
                 elements.aiText.textContent = `LINDA WALKER: ${taunt}`;
 
                 elements.aiStatus.classList.remove('ai-thinking');
                 updateScores();
-                
+
                 gameState.resultTimeout = setTimeout(() => {
                     if (!gameState.isPaused) {
                         gameState.round++;
@@ -1962,16 +1939,16 @@
 
     function giveClue() {
         if (!gameState.roundActive || gameState.clueUsed || gameState.isPaused) return;
-        
+
         gameState.clueUsed = true;
         elements.clueBtn.disabled = true;
-        
+
         const clue = gameState.currentWord.clue;
         elements.resultTitle.textContent = '💡 Clue:';
         elements.resultBaybayin.textContent = '';
         elements.resultFilipino.textContent = clue;
         elements.resultPanel.classList.add('show');
-        
+
         setTimeout(() => {
             if (gameState.roundActive) {
                 elements.resultPanel.classList.remove('show');
@@ -1981,16 +1958,15 @@
 
     function showAnswer() {
         if (!gameState.roundActive || gameState.isPaused) return;
-        
+
         clearInterval(gameState.timerInterval);
         gameState.roundActive = false;
         gameState.streak = 0;
         gameState.playerWasWrong = true;
-        
-        // Show immediate popup
+
         showAnswerPopup(gameState.currentWord.baybayin, gameState.currentWord.filipino, false);
-        
-        flashResult(false, '👁️ Answer Revealed');
+
+        flashResult(false, '👁 Answer Revealed');
         const taunt = PLAYER_MOCK_TAUNTS[Math.floor(Math.random() * PLAYER_MOCK_TAUNTS.length)];
         elements.aiText.textContent = taunt;
         endPlayerTurnWithDelay();
@@ -1998,16 +1974,15 @@
 
     function skipRound() {
         if (!gameState.roundActive || gameState.isPaused) return;
-        
+
         clearInterval(gameState.timerInterval);
         gameState.roundActive = false;
         gameState.streak = 0;
         gameState.playerWasWrong = true;
-        
-        // Show immediate popup
+
         showAnswerPopup(gameState.currentWord.baybayin, gameState.currentWord.filipino, false);
-        
-        flashResult(false, '⏭️ Skipped');
+
+        flashResult(false, '⏭ Skipped');
         const taunt = PLAYER_MOCK_TAUNTS[Math.floor(Math.random() * PLAYER_MOCK_TAUNTS.length)];
         elements.aiText.textContent = taunt;
         endPlayerTurnWithDelay();
@@ -2038,10 +2013,10 @@
         clearTimeout(gameState.popupTimeout);
         elements.playerCard.classList.remove('player-active');
         elements.aiCard.classList.remove('ai-active');
-        
+
         const playerWon = gameState.playerScore > gameState.aiScore;
         const tie = gameState.playerScore === gameState.aiScore;
-        
+
         globalStats.totalGames++;
         if (playerWon) {
             globalStats.wins++;
@@ -2051,18 +2026,18 @@
             globalStats.losses++;
         }
         saveStats();
-        
-        let message = tie ? 'Tabla! Swerte mo lang!' : playerWon ? 'Panalo ka?! Impossible!' : 'LINDA WALKER Rules!';
-        let emoji = tie ? '😏' : playerWon ? '😱' : '👑';
-        
+
+        let message = tie? 'Tabla! Swerte mo lang!' : playerWon? 'Panalo ka?! Impossible!' : 'LINDA WALKER Rules!';
+        let emoji = tie? '😏' : playerWon? '😱' : '👑';
+
         const categoryLabels = { basic: 'Basic', general: 'General', hardcore: 'Hardcore' };
-        
+
         document.querySelector('.game-card').innerHTML = `
             <div class="game-over">
                 <h2>${emoji} ${message}</h2>
                 <div class="badge-group" style="margin: 16px 0;">
                     <div class="game-badge perfect-badge">100% PERFECT 🔥</div>
-                    ${gameState.wordCategory === 'hardcore' ? '<div class="game-badge hardcore-badge">💀 Hardcore</div>' : ''}
+                    ${gameState.wordCategory === 'hardcore'? '<div class="game-badge hardcore-badge">💀 Hardcore</div>' : ''}
                 </div>
                 <div class="stats-grid" style="margin: 24px 0;">
                     <div class="stat-card">
@@ -2089,21 +2064,5 @@
     init();
 </script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
- <!-- COMMENT SECTION NI LINDA WALKER - MOBILE FRIENDLY -->
-    <div style="width: 100%; clear: both; display: block; margin: 80px 0 40px 0; padding: 0 16px; box-sizing: border-box;">
-      <div style="max-width: 500px; margin: 0 auto;">
-        <h3 style="color: #6A5ACD; text-align: center; margin-bottom: 20px; font-size: 18px;">
-          💬 Feedback ng mga Batikan
-        </h3>
-        
-        <script src="https://utteranc.es/client.js"
-          repo="ericksonkaiser/B17Quiz-Lindawalker"
-          issue-term="pathname"
-          theme="github-light"
-          crossorigin="anonymous"
-          async>
-        </script>
-      </div>
-    </div>
 </body>
 </html>
