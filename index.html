@@ -1,702 +1,865 @@
 <!DOCTYPE html>
 <html lang="tl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bakunawa Quiz - Baybayin Challenge</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+Tagalog&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --bg: #0a0a0a;
-        --card: #141414;
-        --accent1: #7c3aed;
-        --accent2: #06b6d4;
-        --accent3: #ec4899;
-        --text: #e5e5e5;
-        --text-dim: #a3a3a3;
-    }
-    * {
-        -webkit-tap-highlight-color: transparent;
-        box-sizing: border-box;
-    }
-    body {
-        font-family: 'Quicksand', sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
-    .baybayin {
-        font-family: 'Noto Sans Tagalog', sans-serif;
-        font-size: 3.5rem;
-        line-height: 1.2;
-        letter-spacing: 0.05em;
-        word-break: break-word;
-    }
-    @media (max-width: 390px) {
-        .baybayin {
-            font-size: 2.5rem;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hanap Salita - Labanan ni Lapu-Lapu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Tagalog&family=Baybayin+Deko&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
         }
-    }
-    .gradient-bg {
-        background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
-        background-size: 200% 200%;
-        animation: gradientShift 8s ease infinite;
-    }
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    .gradient-text {
-        background: linear-gradient(135deg, var(--accent1), var(--accent2));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    .card-gradient {
-        background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-        border: 1px solid rgba(124, 58, 237, 0.2);
-    }
-    .btn-primary {
-        background: linear-gradient(135deg, var(--accent1), var(--accent2));
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-        cursor: pointer;
-    }
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
-    }
-    .btn-primary:active {
-        transform: translateY(0);
-    }
-    .btn-secondary {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-    .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: var(--accent2);
-    }
-    .btn-option {
-        background: rgba(255, 255, 255, 0.03);
-        border: 2px solid rgba(255, 255, 255, 0.08);
-        transition: all 0.2s ease;
-        min-height: 60px;
-        cursor: pointer;
-        word-break: break-word;
-    }
-    .btn-option:hover:not(:disabled) {
-        background: rgba(124, 58, 237, 0.15);
-        border-color: var(--accent1);
-        transform: scale(1.02);
-    }
-    .btn-option:disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-    .flip-card {
-        perspective: 1000px;
-        min-height: 240px;
-        position: relative;
-    }
-    .flip-card-inner {
-        transition: transform 0.6s;
-        transform-style: preserve-3d;
-        position: relative;
-        min-height: 240px;
-    }
-    .flip-card.flipped .flip-card-inner {
-        transform: rotateY(180deg);
-    }
-    .flip-card-front, .flip-card-back {
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        position: absolute;
-        width: 100%;
-        top: 0;
-        left: 0;
-        min-height: 240px;
-    }
-    .flip-card-back {
-        transform: rotateY(180deg);
-    }
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-        20%, 40%, 60%, 80% { transform: translateX(8px); }
-    }
-    .shake {
-        animation: shake 0.5s;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in {
-        animation: fadeIn 0.4s ease-out;
-    }
-    .timer-bar {
-        background: linear-gradient(90deg, var(--accent2), var(--accent1));
-        transition: width 0.1s linear;
-    }
-    .timer-bar.warning {
-        background: linear-gradient(90deg, #f59e0b, #ef4444);
-    }
-    .streak-fire {
-        display: inline-block;
-        animation: flicker 0.8s infinite alternate;
-    }
-    @keyframes flicker {
-        0% { transform: scale(1) rotate(-2deg); }
-        100% { transform: scale(1.1) rotate(2deg); }
-    }
-    .reward-pop {
-        animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    @keyframes popIn {
-        0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-        100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-</style>
+        .baybayin {
+            font-family: 'Baybayin Deko', 'Noto Sans Tagalog', sans-serif;
+            font-feature-settings: "calt" 1, "liga" 1;
+            line-height: 1.6;
+            text-rendering: optimizeLegibility;
+        }
+        .grid-cell {
+            transition: all 0.15s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .grid-cell.selected {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #78350f;
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        .grid-cell.found {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: #064e3b;
+            animation: pulse-found 0.5s ease;
+        }
+        .grid-cell.ai-found {
+            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+            color: #1e1b4b;
+            animation: pulse-found 0.5s ease;
+        }
+        .grid-cell.temp-match {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            color: #1e3a8a;
+        }
+        @keyframes pulse-found {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .word-item.found {
+            text-decoration: line-through;
+            opacity: 0.5;
+            color: #10b981;
+        }
+        .word-item.ai-found {
+            text-decoration: line-through;
+            opacity: 0.5;
+            color: #8b5cf6;
+        }
+        .medal {
+            animation: medal-shine 2s infinite;
+        }
+        @keyframes medal-shine {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #fbbf24;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .timer-warning {
+            animation: timer-pulse 1s infinite;
+            color: #f87171 !important;
+        }
+        @keyframes timer-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
 </head>
-<body class="flex items-center justify-center p-4">
-    <div class="w-full max-w-[480px] mx-auto">
-        <!-- Mode Select Screen -->
-        <div id="modeScreen" class="fade-in">
-            <div class="card-gradient rounded-3xl p-6 sm:p-8 shadow-2xl">
-                <div class="text-center mb-8">
-                    <div class="text-6xl mb-3">🐉</div>
-                    <h1 class="text-4xl sm:text-5xl font-bold gradient-text mb-2">Bakunawa Quiz</h1>
-                    <p class="text-text-dim text-sm sm:text-base">Master Baybayin B17+ Standard</p>
+<body class="bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-amber-900 via-orange-800 to-red-900 text-white shadow-2xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-khanda text-3xl sm:text-4xl text-amber-300 medal"></i>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">Hanap Salita</h1>
+                        <p class="text-xs sm:text-sm text-amber-200">Labanan ni Lapu-Lapu</p>
+                    </div>
+                <div class="flex items-center gap-3 sm:gap-6 text-sm sm:text-base">
+                    <div id="turnTimer" class="text-center hidden">
+                        <div class="text-amber-200 text-xs">Turn Mo</div>
+                        <div id="turnTimeDisplay" class="font-bold text-lg sm:text-xl text-yellow-300">01:00</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-amber-200 text-xs">Iskor Mo</div>
+                        <div id="playerScore" class="font-bold text-lg sm:text-xl text-emerald-300">0</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-amber-200 text-xs">AI Iskor</div>
+                        <div id="aiScore" class="font-bold text-lg sm:text-xl text-purple-300">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
+        <!-- Start Screen -->
+        <div id="startScreen" class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border-4 border-amber-600">
+                <div class="text-center mb-6">
+                    <i class="fas fa-shield-halved text-6xl text-amber-600 mb-4"></i>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Handa ka na ba, Mandirigma?</h2>
+                    <p class="text-gray-600 text-sm sm:text-base">Hanapin ang mga salitang Baybayin at talunin ang AI kalaban!</p>
                 </div>
 
-                <div class="mb-6 text-center">
-                    <p class="text-text-dim text-sm mb-4">Piliin ang iyong challenge:</p>
-                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Pangalan Mo</label>
+                        <input type="text" id="playerName" placeholder="Ilagay ang pangalan..." 
+                            class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition">
+                    </div>
 
-                <div class="space-y-3">
-                    <button id="btnEasy" class="btn-primary w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg">
-                        <div class="flex items-center justify-between">
-                            <div class="text-left">
-                                <div class="text-xl">Easy</div>
-                                <div class="text-xs opacity-80">10 tanong • 5s bawat isa</div>
-                            </div>
-                            <div class="text-2xl">🌱</div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Dami ng Salita</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button data-words="15" class="word-count-btn bg-amber-100 hover:bg-amber-200 border-2 border-amber-400 text-amber-900 font-semibold py-3 rounded-lg transition">15 Salita</button>
+                            <button data-words="20" class="word-count-btn bg-amber-100 hover:bg-amber-200 border-2 border-amber-400 text-amber-900 font-semibold py-3 rounded-lg transition">20 Salita</button>
+                            <button data-words="30" class="word-count-btn bg-amber-600 hover:bg-amber-700 border-2 border-amber-600 text-white font-semibold py-3 rounded-lg transition">30 Salita</button>
                         </div>
-                    </button>
+                    </div>
 
-                    <button id="btnMedium" class="btn-primary w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg">
-                        <div class="flex items-center justify-between">
-                            <div class="text-left">
-                                <div class="text-xl">Medium</div>
-                                <div class="text-xs opacity-80">20 tanong • 5s bawat isa</div>
-                            </div>
-                            <div class="text-2xl">⚡</div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Laban sa AI?</label>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="vsAiToggle" checked class="w-5 h-5 text-amber-600 rounded focus:ring-amber-500">
+                                <span class="text-gray-700 font-medium">Oo, labanan ang AI!</span>
+                            </label>
                         </div>
-                    </button>
-
-                    <button id="btnHard" class="btn-primary w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg">
-                        <div class="flex items-center justify-between">
-                            <div class="text-left">
-                                <div class="text-xl">Hard</div>
-                                <div class="text-xs opacity-80">50 tanong • 5s bawat isa</div>
-                            </div>
-                            <div class="text-2xl">🔥</div>
+                        <div id="difficultySelect" class="mt-3">
+                            <select id="aiDifficulty" class="w-full px-4 py-2 border-2 border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+                                <option value="easy">Madali - Mabagal mag-isip</option>
+                                <option value="medium" selected>Katamtaman - Normal</option>
+                                <option value="hard">Mahirap - Mabilis!</option>
+                            </select>
                         </div>
-                    </button>
-                </div>
+                    </div>
 
-                <div class="mt-6 pt-6 border-t border-white/10">
-                    <p class="text-xs text-text-dim text-center">B17+ Standard • May virama ᜔ para sa final consonants</p>
+                    <button id="startGameBtn" class="w-full bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-700 hover:to-red-700 text-white font-bold py-4 rounded-xl shadow-lg transform hover:scale-105 transition text-lg">
+                        <i class="fas fa-play-circle mr-2"></i>Simulan ang Laban!
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Game Screen -->
         <div id="gameScreen" class="hidden">
-            <div class="card-gradient rounded-3xl p-5 sm:p-6 shadow-2xl">
-                <!-- Header Stats -->
-                <div class="flex justify-between items-start mb-4 gap-2">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <div class="bg-white/5 px-3 py-1.5 rounded-xl">
-                            <span class="text-xs text-text-dim">Tanong</span>
-                            <span class="block font-bold text-lg"><span id="currentQ">1</span>/<span id="totalQ">10</span></span>
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Game Grid -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-2xl p-3 sm:p-6 border-4 border-amber-600">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-th text-amber-600"></i>
+                                Baybayin Grid
+                            </h3>
+                            <button id="resetGameBtn" class="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-lg font-semibold transition">
+                                <i class="fas fa-redo mr-1"></i>Ulit
+                            </button>
                         </div>
-                        <div class="bg-white/5 px-3 py-1.5 rounded-xl">
-                            <span class="text-xs text-text-dim">Score</span>
-                            <span class="block font-bold text-lg gradient-text"><span id="score">0</span></span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div id="streakDisplay" class="bg-white/5 px-3 py-1.5 rounded-xl hidden">
-                            <span class="streak-fire text-lg">🔥</span>
-                            <span class="font-bold text-lg ml-1"><span id="streak">0</span></span>
-                        </div>
-                        <button id="btnQuit" class="bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-xl transition">
-                            <span class="text-xl">✕</span>
-                        </button>
+                        <div id="gameGrid" class="grid gap-1 select-none touch-none"></div>
                     </div>
                 </div>
 
-                <!-- Timer Bar -->
-                <div class="mb-6">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-text-dim">Oras</span>
-                        <span id="timerText" class="text-lg font-bold gradient-text">5.0s</span>
-                    </div>
-                    <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-                        <div id="timerBar" class="timer-bar h-full rounded-full" style="width: 100%"></div>
-                    </div>
-                </div>
-
-                <!-- Flip Card -->
-                <div class="flip-card mb-6" id="flipCard">
-                    <div class="flip-card-inner">
-                        <!-- Front: Question -->
-                        <div class="flip-card-front">
-                            <div class="bg-gradient-to-br from-white/5 to-white/0 rounded-2xl p-6 text-center border border-white/10 min-h-[240px] flex flex-col items-center justify-center">
-                                <div class="text-6xl sm:text-7xl mb-4" id="hintEmoji">🐕</div>
-                                <div class="baybayin text-white mb-2" id="baybayinWord">ᜀᜐᜓ</div>
-                                <p class="text-text-dim text-sm">Ano ang salitang ito?</p>
+                <!-- Word List Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 border-4 border-amber-600 sticky top-24">
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-list text-amber-600"></i>
+                            Hanapin ang mga Salita
+                        </h3>
+                        <div id="wordList" class="space-y-2 max-h-[500px] overflow-y-auto scrollbar-hide"></div>
+                        
+                        <div class="mt-6 pt-4 border-t-2 border-amber-200">
+                            <div class="text-sm text-gray-600 mb-2">Progress ng Laban:</div>
+                            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                                <div id="progressBar" class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
                             </div>
-                        </div>
-                        <!-- Back: Feedback -->
-                        <div class="flip-card-back">
-                            <div id="feedbackCard" class="bg-gradient-to-br from-white/5 to-white/0 rounded-2xl p-6 text-center border border-white/10 min-h-[240px] flex flex-col items-center justify-center">
-                                <div id="feedbackEmoji" class="text-7xl mb-3"></div>
-                                <div id="feedbackText" class="text-2xl font-bold mb-2"></div>
-                                <div id="feedbackSubtext" class="text-text-dim text-sm"></div>
-                            </div>
+                            <div id="progressText" class="text-center text-sm font-semibold text-gray-700 mt-2">0 / 0 Nasakop</div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Options -->
-                <div id="optionsContainer" class="grid grid-cols-2 gap-3">
-                    <!-- Options will be inserted here -->
-                </div>
-
-                <!-- Items Collected -->
-                <div id="itemsBar" class="mt-6 pt-4 border-t border-white/10 hidden">
-                    <p class="text-xs text-text-dim mb-2 text-center">Mga Nakuha:</p>
-                    <div id="itemsDisplay" class="flex flex-wrap gap-2 justify-center"></div>
                 </div>
             </div>
         </div>
 
-        <!-- End Screen -->
-        <div id="endScreen" class="hidden fade-in">
-            <div class="card-gradient rounded-3xl p-6 sm:p-8 shadow-2xl text-center">
-                <div id="endEmoji" class="text-7xl mb-4">🏆</div>
-                <h2 class="text-3xl sm:text-4xl font-bold gradient-text mb-2">Tapos na!</h2>
-                <p class="text-text-dim mb-6">Score mo: <span id="finalScore" class="font-bold text-white text-xl">0/10</span></p>
+        <!-- Victory Screen -->
+        <div id="victoryScreen" class="hidden max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border-4 border-amber-600 text-center">
+                <div id="medalDisplay" class="mb-6">
+                    <i class="fas fa-medal text-8xl medal"></i>
+                </div>
+                <h2 id="victoryTitle" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2"></h2>
+                <p id="victoryMessage" class="text-lg text-gray-600 mb-6"></p>
                 
-                <div class="bg-white/5 rounded-2xl p-4 mb-6">
-                    <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 mb-6">
+                    <div class="grid grid-cols-2 gap-4 text-center">
                         <div>
-                            <div class="text-2xl mb-1">✅</div>
-                            <div class="text-2xl font-bold gradient-text" id="correctCount">0</div>
-                            <div class="text-xs text-text-dim">Tama</div>
+                            <div class="text-3xl font-bold text-emerald-600" id="finalPlayerScore">0</div>
+                            <div class="text-sm text-gray-600">Salita Mo</div>
                         </div>
-                        <div>
-                            <div class="text-2xl mb-1">🔥</div>
-                            <div class="text-2xl font-bold" id="maxStreak">0</div>
-                            <div class="text-xs text-text-dim">Best Streak</div>
+                        <div id="finalAiScoreContainer">
+                            <div class="text-3xl font-bold text-purple-600" id="finalAiScore">0</div>
+                            <div class="text-sm text-gray-600">Salita ng AI</div>
                         </div>
-                        <div>
-                            <div class="text-2xl mb-1">🎁</div>
-                            <div class="text-2xl font-bold" id="itemsCount">0</div>
-                            <div class="text-xs text-text-dim">Items</div>
-                        </div>
-                    <div id="perfectMsg" class="text-sm hidden">
-                        <div class="gradient-bg text-white px-4 py-2 rounded-xl font-semibold">Perfect! Walang mintis! 🎉</div>
-                    </div>
-                    <div id="retryMsg" class="text-sm text-text-dim">
-                        Balikan mo para ma-perfect!
                     </div>
                 </div>
 
-                <div id="itemsCollectedFinal" class="mb-6">
-                    <p class="text-sm text-text-dim mb-3">Mga Nakuha Mo:</p>
-                    <div id="finalItemsDisplay" class="flex flex-wrap gap-2 justify-center"></div>
-                </div>
-
-                <div class="space-y-3">
-                    <button id="btnPlayAgain" class="btn-primary w-full py-4 px-6 rounded-2xl font-semibold text-white text-lg">
-                        Laro Ulit
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button id="playAgainBtn" class="flex-1 bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-700 hover:to-red-700 text-white font-bold py-4 rounded-xl shadow-lg transform hover:scale-105 transition">
+                        <i class="fas fa-redo mr-2"></i>Labanan Muli
                     </button>
-                    <button id="btnMenu" class="btn-secondary w-full py-4 px-6 rounded-2xl font-semibold text-white">
-                        Baguhin ang Difficulty
+                    <button id="changeDiffBtn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl shadow-lg transition">
+                        <i class="fas fa-cog mr-2"></i>Baguhin
                     </button>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-amber-900 via-orange-800 to-red-900 text-white py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+            <p class="text-amber-200">Gawa para sa mga mandirigma ng wika at kultura 🛡️</p>
+            <p class="text-amber-300 mt-1">Hanap Salita - Labanan ni Lapu-Lapu @ericksonkaiser2026</p>
+        </div>
+    </footer>
 
 <script>
-    // VERIFIED B17+ QUESTION BANK - Double-checked spellings
-    // Virama ᜔ used for final consonants as per B17+ standard
-    const QUESTION_BANK = [
-        { baybayin: 'ᜀᜐᜓ', answer: 'ASO', emoji: '🐕' },
-        { baybayin: 'ᜉᜓᜐ', answer: 'PUSA', emoji: '🐈' },
-        { baybayin: 'ᜊᜑᜌ᜔', answer: 'BAHAY', emoji: '🏠' },
-        { baybayin: 'ᜁᜐ᜔ᜇ', answer: 'ISDA', emoji: '🐟' },
-        { baybayin: 'ᜁᜊᜓᜈ᜔', answer: 'IBON', emoji: '🐦' },
-        { baybayin: 'ᜀᜇᜏ᜔', answer: 'ARAW', emoji: '☀️' },
-        { baybayin: 'ᜊᜓᜏᜈ᜔', answer: 'BUWAN', emoji: '🌙' },
-        { baybayin: 'ᜆᜓᜊᜒᜄ᜔', answer: 'TUBIG', emoji: '💧' },
-        { baybayin: 'ᜀᜉᜓᜌ᜔', answer: 'APOY', emoji: '🔥' },
-        { baybayin: 'ᜎᜓᜉ', answer: 'LUPA', emoji: '🌍' },
-        { baybayin: 'ᜃᜋᜌ᜔', answer: 'KAMAY', emoji: '✋' },
-        { baybayin: 'ᜉᜀ', answer: 'PAA', emoji: '🦶' },
-        { baybayin: 'ᜋᜆ', answer: 'MATA', emoji: '👁️' },
-        { baybayin: 'ᜁᜎᜓᜅ᜔', answer: 'ILONG', emoji: '👃' },
-        { baybayin: 'ᜊᜒᜊᜒᜄ᜔', answer: 'BIBIG', emoji: '👄' },
-        { baybayin: 'ᜂᜎᜓ', answer: 'ULO', emoji: '🗿' },
-        { baybayin: 'ᜉᜓᜐᜓ', answer: 'PUSO', emoji: '❤️' },
-        { baybayin: 'ᜃᜋᜓᜐ᜔ᜆ', answer: 'KAMUSTA', emoji: '👋' },
-        { baybayin: 'ᜐᜎᜋᜆ᜔', answer: 'SALAMAT', emoji: '🙏' },
-        { baybayin: 'ᜋᜑᜎ᜔', answer: 'MAHAL', emoji: '💕' },
-        { baybayin: 'ᜀᜈᜃ᜔', answer: 'ANAK', emoji: '👶' },
-        { baybayin: 'ᜁᜈ', answer: 'INA', emoji: '👩' },
-        { baybayin: 'ᜀᜋ', answer: 'AMA', emoji: '👨' },
-        { baybayin: 'ᜃᜁᜊᜒᜄᜈ᜔', answer: 'KAIBIGAN', emoji: '🤝' },
-        { baybayin: 'ᜉᜀᜇᜎᜈ᜔', answer: 'PAARALAN', emoji: '🏫' },
-        { baybayin: 'ᜎᜒᜊ᜔ᜇᜓ', answer: 'LIBRO', emoji: '📖' },
-        { baybayin: 'ᜎᜉᜒᜐ᜔', answer: 'LAPIS', emoji: '✏️' },
-        { baybayin: 'ᜋᜒᜐ', answer: 'MESA', emoji: '🪑' },
-        { baybayin: 'ᜂᜉᜓᜀᜈ᜔', answer: 'UPUAN', emoji: '💺' },
-        { baybayin: 'ᜊᜒᜈ᜔ᜆᜈ', answer: 'BINTANA', emoji: '🪟' }
-    ];
+const WORD_DATABASE = [
+    { tagalog: 'KAMAY', baybayin: 'ᜃᜋᜌ᜔' },
+    { tagalog: 'DAGAT', baybayin: 'ᜇᜄᜆ᜔' },
+    { tagalog: 'TUBIG', baybayin: 'ᜆᜓᜊᜒᜄ᜔' },
+    { tagalog: 'LANGIT', baybayin: 'ᜎᜅᜒᜆ᜔' },
+    { tagalog: 'ARAW', baybayin: 'ᜀᜇᜏ᜔' },
+    { tagalog: 'BUWAN', baybayin: 'ᜊᜓᜏᜈ᜔' },
+    { tagalog: 'BITUIN', baybayin: 'ᜊᜒᜆᜓᜁᜈ᜔' },
+    { tagalog: 'BAYANI', baybayin: 'ᜊᜌᜈᜒ' },
+    { tagalog: 'DUGO', baybayin: 'ᜇᜓᜄᜓᜈ᜔' },
+    { tagalog: 'PUSO', baybayin: 'ᜉᜓᜐᜓᜈ᜔' },
+    { tagalog: 'LUPA', baybayin: 'ᜎᜓᜉᜈ᜔' },
+    { tagalog: 'AHAS', baybayin: 'ᜀᜑᜐ᜔' },
+    { tagalog: 'ISDA', baybayin: 'ᜁᜐᜇᜈ' },
+    { tagalog: 'IBON', baybayin: 'ᜁᜊᜓᜈ᜔' },
+    { tagalog: 'PUNO', baybayin: 'ᜉᜓᜈᜓᜈ᜔' },
+    { tagalog: 'BUNDOK', baybayin: 'ᜊᜓᜈᜇᜓᜃ᜔' },
+    { tagalog: 'ILOG', baybayin: 'ᜁᜎᜓᜄ᜔' },
+    { tagalog: 'HANGIN', baybayin: 'ᜑᜅᜒᜈ᜔' },
+    { tagalog: 'ULAN', baybayin: 'ᜂᜎᜈ᜔' },
+    { tagalog: 'INIT', baybayin: 'ᜁᜈᜒᜆ᜔' },
+    { tagalog: 'LAMIG', baybayin: 'ᜎᜋᜒᜄ᜔' },
+    { tagalog: 'LAKAS', baybayin: 'ᜎᜃᜐ᜔' },
+    { tagalog: 'TAPANG', baybayin: 'ᜆᜉᜅ᜔' },
+    { tagalog: 'DANGAL', baybayin: 'ᜇᜅᜎ᜔' },
+    { tagalog: 'LAKBAY', baybayin: 'ᜎᜃᜊᜌ᜔' },
+    { tagalog: 'MANDIRIGMA', baybayin: 'ᜋᜈᜇᜒᜇᜒᜄᜋᜈ᜔' },
+    { tagalog: 'SANDATA', baybayin: 'ᜐᜈᜇᜆᜈ᜔' },
+    { tagalog: 'BALUTI', baybayin: 'ᜊᜎᜓᜆᜒ' },
+    { tagalog: 'ESPADA', baybayin: 'ᜁᜐᜉᜇ' },
+    { tagalog: 'KALASAG', baybayin: 'ᜃᜎᜐᜄ᜔' },
+    { tagalog: 'LABAN', baybayin: 'ᜎᜊᜈ᜔' },
+    { tagalog: 'TAGUMPAY', baybayin: 'ᜆᜄᜓᜋᜉᜌ᜔' },
+    { tagalog: 'KALAYAAN', baybayin: 'ᜃᜎᜌᜀᜈ᜔' },
+    { tagalog: 'BAYAN', baybayin: 'ᜊᜌᜈ᜔' },
+    { tagalog: 'LAHI', baybayin: 'ᜎᜑᜒ' },
+    { tagalog: 'PAGASA', baybayin: 'ᜉᜄᜐ' },
+    { tagalog: 'TIWALA', baybayin: 'ᜆᜒᜏᜎᜈ᜔' },
+    { tagalog: 'DAKILA', baybayin: 'ᜇᜃᜒᜎᜈ᜔' },
+    { tagalog: 'BANTOG', baybayin: 'ᜊᜈᜆᜓᜄ᜔' },
+    { tagalog: 'HARANG', baybayin: 'ᜑᜇᜅ᜔' }
+];
 
-    const REWARD_ITEMS = ['⭐', '💎', '🏆', '🎖️', '👑', '💫', '🌟', '✨', '🎁', '🔮'];
-    const TEASING_EMOJIS = ['😝', '😜', '🤪', '🙈', '😋', '🤭', '😏', '🙃'];
+// FIX: Filler characters now include complete syllables with kudlit/virama
+const BAYBAYIN_FILLERS = [
+    // Base characters
+    'ᜀ', 'ᜊ', 'ᜃ', 'ᜇ', 'ᜁ', 'ᜄ', 'ᜑ', 'ᜎ', 'ᜋ', 'ᜈ', 'ᜅ', 'ᜉ', 'ᜐ', 'ᜆ',
+    // With kudlit i/e: ᜒ
+    'ᜊᜒ', 'ᜃᜒ', 'ᜇᜒ', 'ᜄᜒ', 'ᜑᜒ', 'ᜎᜒ', 'ᜋᜒ', 'ᜈᜒ', 'ᜅᜒ', 'ᜉᜒ', 'ᜐᜒ', 'ᜆᜒ',
+    // With kudlit o/u: ᜓ
+    'ᜊᜓ', 'ᜃᜓ', 'ᜇᜓ', 'ᜄᜓ', 'ᜑᜓ', 'ᜎᜓ', 'ᜋᜓ', 'ᜈᜓ', 'ᜅᜓ', 'ᜉᜓ', 'ᜐᜓ', 'ᜆᜓ',
+    // With virama: ᜔
+    'ᜊ᜔', 'ᜃ᜔', 'ᜇ᜔', 'ᜄ᜔', 'ᜑ᜔', 'ᜎ᜔', 'ᜋ᜔', 'ᜈ᜔', 'ᜅ᜔', 'ᜉ᜔', 'ᜐ᜔'
+];
 
-    let gameState = {
-        mode: '',
-        questions: [],
-        currentIndex: 0,
-        score: 0,
-        streak: 0,
-        maxStreak: 0,
-        items: [],
-        timer: null,
-        timeLeft: 5,
-        totalTime: 5,
-        timePerQ: 5,
-        totalQuestions: 10,
-        isAnswered: false
-    };
+let gameState = {
+    gridSize: 18,
+    grid: [],
+    words: [],
+    foundWords: new Set(),
+    aiFoundWords: new Set(),
+    selectedCells: [],
+    isSelecting: false,
+    startCell: null,
+    playerScore: 0,
+    aiScore: 0,
+    wordCount: 30,
+    vsAi: true,
+    aiDifficulty: 'medium',
+    playerName: 'Mandirigma',
+    gameActive: false,
+    currentTurn: 'player',
+    turnTimeLeft: 60,
+    turnTimer: null,
+    aiMoveTimer: null
+};
 
-    function shuffle(array) {
-        const arr = [...array];
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
+const GRID_DIRECTIONS = [
+    [0, 1], [1, 0], [1, 1], [-1, 1],
+    [0, -1], [-1, 0], [-1, -1], [1, -1]
+];
+
+const AI_SETTINGS = {
+    easy: { minDelay: 8000, maxDelay: 15000, accuracy: 0.6 },
+    medium: { minDelay: 4000, maxDelay: 8000, accuracy: 0.8 },
+    hard: { minDelay: 2000, maxDelay: 4000, accuracy: 0.95 }
+};
+
+// Utility to split Baybayin string into logical characters (base + diacritics)
+function splitBaybayin(str) {
+    const chars = [];
+    for (let i = 0; i < str.length; i++) {
+        let char = str[i];
+        // Check if next char is a diacritic
+        if (i + 1 < str.length && (str[i + 1] === 'ᜒ' || str[i + 1] === 'ᜓ' || str[i + 1] === '᜔')) {
+            char += str[i + 1];
+            i++;
         }
-        return arr;
+        chars.push(char);
     }
+    return chars;
+}
 
-    function startGame(mode) {
-        // Clear any existing timer first
-        if (gameState.timer) {
-            clearInterval(gameState.timer);
-            gameState.timer = null;
-        }
+function initGame() {
+    document.querySelectorAll('.word-count-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.word-count-btn').forEach(b => {
+                b.classList.remove('bg-amber-600', 'text-white');
+                b.classList.add('bg-amber-100', 'text-amber-900');
+            });
+            btn.classList.remove('bg-amber-100', 'text-amber-900');
+            btn.classList.add('bg-amber-600', 'text-white');
+            gameState.wordCount = parseInt(btn.dataset.words);
+        });
+    });
 
-        gameState.mode = mode;
-        gameState.timePerQ = 5; // FIXED: All modes = 5 seconds exactly
-        
-        let questionCount = 10;
-        if (mode === 'medium') {
-            questionCount = 20;
-        } else if (mode === 'hard') {
-            questionCount = 50;
-        }
-        gameState.totalQuestions = questionCount;
+    document.getElementById('vsAiToggle').addEventListener('change', (e) => {
+        gameState.vsAi = e.target.checked;
+        document.getElementById('difficultySelect').style.display = e.target.checked ? 'block' : 'none';
+    });
 
-        // Generate random questions - repeat from pool if needed for Hard mode
-        let pool = [...QUESTION_BANK];
-        while (pool.length < questionCount) {
-            pool = pool.concat(QUESTION_BANK);
-        }
-        gameState.questions = shuffle(pool).slice(0, questionCount);
-        gameState.currentIndex = 0;
-        gameState.score = 0;
-        gameState.streak = 0;
-        gameState.maxStreak = 0;
-        gameState.items = [];
-        gameState.isAnswered = false;
+    document.getElementById('startGameBtn').addEventListener('click', startGame);
+    document.getElementById('resetGameBtn').addEventListener('click', resetGame);
+    document.getElementById('playAgainBtn').addEventListener('click', () => {
+        document.getElementById('victoryScreen').classList.add('hidden');
+        startGame();
+    });
+    document.getElementById('changeDiffBtn').addEventListener('click', () => {
+        document.getElementById('victoryScreen').classList.add('hidden');
+        document.getElementById('startScreen').classList.remove('hidden');
+    });
+}
 
-        document.getElementById('modeScreen').classList.add('hidden');
-        document.getElementById('gameScreen').classList.remove('hidden');
-        document.getElementById('endScreen').classList.add('hidden');
-        document.getElementById('itemsBar').classList.add('hidden');
-        
-        updateStats();
-        loadQuestion();
+function startGame() {
+    gameState.playerName = document.getElementById('playerName').value.trim() || 'Mandirigma';
+    gameState.vsAi = document.getElementById('vsAiToggle').checked;
+    gameState.aiDifficulty = document.getElementById('aiDifficulty').value;
+    
+    gameState.foundWords = new Set();
+    gameState.aiFoundWords = new Set();
+    gameState.selectedCells = [];
+    gameState.playerScore = 0;
+    gameState.aiScore = 0;
+    gameState.gameActive = true;
+    gameState.currentTurn = 'player';
+    gameState.turnTimeLeft = 60;
+    
+    generateGame();
+    
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('victoryScreen').classList.add('hidden');
+    document.getElementById('gameScreen').classList.remove('hidden');
+    
+    // Show/hide turn timer based on AI mode
+    if (gameState.vsAi) {
+        document.getElementById('turnTimer').classList.remove('hidden');
+        startTurnTimer();
+    } else {
+        document.getElementById('turnTimer').classList.add('hidden');
     }
+    
+    updateScore();
+}
 
-    function loadQuestion() {
-        if (gameState.currentIndex >= gameState.totalQuestions) {
-            endGame();
+function generateGame() {
+    // Select random words
+    const shuffled = [...WORD_DATABASE].sort(() => Math.random() - 0.5);
+    gameState.words = shuffled.slice(0, gameState.wordCount);
+    
+    // Initialize empty grid
+    const size = gameState.gridSize;
+    gameState.grid = Array(size).fill(null).map(() => Array(size).fill(null));
+    
+    // Place words - FIX: Use complete syllables with kudlit/virama
+    const placedWords = [];
+    for (const wordObj of gameState.words) {
+        const wordChars = splitBaybayin(wordObj.baybayin);
+        let placed = false;
+        let attempts = 0;
+        
+        while (!placed && attempts < 100) {
+            const dir = GRID_DIRECTIONS[Math.floor(Math.random() * GRID_DIRECTIONS.length)];
+            const row = Math.floor(Math.random() * size);
+            const col = Math.floor(Math.random() * size);
+            
+            if (canPlaceWord(wordChars, row, col, dir)) {
+                placeWord(wordChars, row, col, dir, wordObj.baybayin);
+                placed = true;
+                placedWords.push(wordObj);
+            }
+            attempts++;
+        }
+    }
+    
+    // Fill empty cells with random Baybayin including kudlit/virama
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            if (!gameState.grid[i][j]) {
+                // NEVER use numbers, dots, or other ASCII
+                gameState.grid[i][j] = {
+                    char: BAYBAYIN_FILLERS[Math.floor(Math.random() * BAYBAYIN_FILLERS.length)],
+                    word: null
+                };
+            }
+        }
+    }
+    
+    renderGrid();
+    renderWordList();
+}
+
+function canPlaceWord(chars, row, col, dir) {
+    const size = gameState.gridSize;
+    for (let i = 0; i < chars.length; i++) {
+        const r = row + dir[0] * i;
+        const c = col + dir[1] * i;
+        if (r < 0 || r >= size || c < 0 || c >= size) return false;
+        if (gameState.grid[r][c] && gameState.grid[r][c].char !== chars[i]) return false;
+    }
+    return true;
+}
+
+function placeWord(chars, row, col, dir, fullWord) {
+    for (let i = 0; i < chars.length; i++) {
+        const r = row + dir[0] * i;
+        const c = col + dir[1] * i;
+        gameState.grid[r][c] = { char: chars[i], word: fullWord };
+    }
+}
+
+function renderGrid() {
+    const gridEl = document.getElementById('gameGrid');
+    const size = gameState.gridSize;
+    gridEl.style.gridTemplateColumns = `repeat(${size}, minmax(0, 1fr))`;
+    gridEl.innerHTML = '';
+    
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell baybayin aspect-square flex items-center justify-center text-lg sm:text-xl md:text-2xl font-bold bg-white border border-amber-200 rounded cursor-pointer hover:bg-amber-50';
+            cell.textContent = gameState.grid[i][j].char;
+            cell.dataset.row = i;
+            cell.dataset.col = j;
+            
+            cell.addEventListener('mousedown', startSelection);
+            cell.addEventListener('mouseenter', updateSelection);
+            cell.addEventListener('mouseup', endSelection);
+            cell.addEventListener('touchstart', handleTouchStart, { passive: false });
+            cell.addEventListener('touchmove', handleTouchMove, { passive: false });
+            cell.addEventListener('touchend', endSelection);
+            
+            gridEl.appendChild(cell);
+        }
+    }
+}
+
+function renderWordList() {
+    const listEl = document.getElementById('wordList');
+    listEl.innerHTML = '';
+    
+    gameState.words.forEach(wordObj => {
+        const item = document.createElement('div');
+        item.className = 'word-item flex items-center justify-between p-2 bg-amber-50 rounded-lg border border-amber-200';
+        item.dataset.word = wordObj.baybayin;
+        item.innerHTML = `
+            <div class="flex-1">
+                <div class="text-xs text-gray-600">${wordObj.tagalog}</div>
+                <div class="baybayin text-lg font-bold text-gray-800">${wordObj.baybayin}</div>
+            </div>
+            <i class="fas fa-circle text-gray-300 text-xs"></i>
+        `;
+        listEl.appendChild(item);
+    });
+    
+    updateProgress();
+}
+
+function startSelection(e) {
+    if (!gameState.gameActive) return;
+    if (gameState.vsAi && gameState.currentTurn !== 'player') return;
+    gameState.isSelecting = true;
+    gameState.startCell = { row: parseInt(e.target.dataset.row), col: parseInt(e.target.dataset.col) };
+    gameState.selectedCells = [gameState.startCell];
+    updateCellHighlights();
+}
+
+function updateSelection(e) {
+    if (!gameState.isSelecting || !gameState.startCell) return;
+    if (gameState.vsAi && gameState.currentTurn !== 'player') return;
+    const endCell = { row: parseInt(e.target.dataset.row), col: parseInt(e.target.dataset.col) };
+    gameState.selectedCells = getLineCells(gameState.startCell, endCell);
+    updateCellHighlights();
+}
+
+function endSelection() {
+    if (!gameState.isSelecting) return;
+    if (gameState.vsAi && gameState.currentTurn !== 'player') return;
+    gameState.isSelecting = false;
+    checkSelectedWord();
+    gameState.selectedCells = [];
+    gameState.startCell = null;
+    updateCellHighlights();
+}
+
+function handleTouchStart(e) {
+    e.preventDefault();
+    startSelection(e);
+}
+
+function handleTouchMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (element && element.classList.contains('grid-cell')) {
+        updateSelection({ target: element });
+    }
+}
+
+function getLineCells(start, end) {
+    const cells = [];
+    const dRow = end.row - start.row;
+    const dCol = end.col - start.col;
+    const steps = Math.max(Math.abs(dRow), Math.abs(dCol));
+    
+    if (steps === 0) return [start];
+    
+    const dirRow = dRow / steps;
+    const dirCol = dCol / steps;
+    
+    // Only allow straight lines and diagonals
+    if (Math.abs(dirRow) > 1 || Math.abs(dirCol) > 1 || (dirRow !== 0 && dirCol !== 0 && Math.abs(dirRow) !== Math.abs(dirCol))) {
+        return [start];
+    }
+    
+    for (let i = 0; i <= steps; i++) {
+        cells.push({
+            row: start.row + Math.round(dirRow * i),
+            col: start.col + Math.round(dirCol * i)
+        });
+    }
+    return cells;
+}
+
+function updateCellHighlights() {
+    document.querySelectorAll('.grid-cell').forEach(cell => {
+        cell.classList.remove('selected', 'temp-match');
+    });
+    
+    gameState.selectedCells.forEach(pos => {
+        const cell = document.querySelector(`[data-row="${pos.row}"][data-col="${pos.col}"]`);
+        if (cell && !cell.classList.contains('found') && !cell.classList.contains('ai-found')) {
+            cell.classList.add('selected');
+        }
+    });
+}
+
+function checkSelectedWord() {
+    const word = gameState.selectedCells.map(pos => gameState.grid[pos.row][pos.col].char).join('');
+    const reverseWord = gameState.selectedCells.map(pos => gameState.grid[pos.row][pos.col].char).reverse().join('');
+    
+    const matchedWord = gameState.words.find(w => 
+        (w.baybayin === word || w.baybayin === reverseWord) && 
+        !gameState.foundWords.has(w.baybayin) && 
+        !gameState.aiFoundWords.has(w.baybayin)
+    );
+    
+    if (matchedWord) {
+        markWordFound(matchedWord.baybayin, 'player');
+        // Reset timer after successful word find in turn-based mode
+        if (gameState.vsAi) {
+            gameState.turnTimeLeft = 60;
+            updateTurnDisplay();
+        }
+    }
+}
+
+function markWordFound(baybayinWord, finder) {
+    if (gameState.foundWords.has(baybayinWord) || gameState.aiFoundWords.has(baybayinWord)) return;
+    
+    if (finder === 'player') {
+        gameState.foundWords.add(baybayinWord);
+        gameState.playerScore++;
+    } else {
+        gameState.aiFoundWords.add(baybayinWord);
+        gameState.aiScore++;
+    }
+    
+    // Mark cells
+    gameState.selectedCells.forEach(pos => {
+        const cell = document.querySelector(`[data-row="${pos.row}"][data-col="${pos.col}"]`);
+        if (cell) {
+            cell.classList.remove('selected');
+            cell.classList.add(finder === 'player' ? 'found' : 'ai-found');
+        }
+    });
+    
+    // Update word list
+    const wordItem = document.querySelector(`[data-word="${baybayinWord}"]`);
+    if (wordItem) {
+        wordItem.classList.add(finder === 'player' ? 'found' : 'ai-found');
+        wordItem.querySelector('i').className = `fas fa-${finder === 'player' ? 'check-circle text-emerald-500' : 'robot text-purple-500'} text-xs`;
+    }
+    
+    updateScore();
+    updateProgress();
+    checkGameEnd();
+}
+
+function updateScore() {
+    document.getElementById('playerScore').textContent = gameState.playerScore;
+    document.getElementById('aiScore').textContent = gameState.aiScore;
+}
+
+function updateProgress() {
+    const total = gameState.words.length;
+    const found = gameState.foundWords.size + gameState.aiFoundWords.size;
+    const percent = (found / total) * 100;
+    
+    document.getElementById('progressBar').style.width = percent + '%';
+    document.getElementById('progressText').textContent = `${found} / ${total} Nasakop`;
+}
+
+function startTurnTimer() {
+    clearInterval(gameState.turnTimer);
+    gameState.turnTimeLeft = 60;
+    updateTurnDisplay();
+    
+    gameState.turnTimer = setInterval(() => {
+        if (!gameState.gameActive) {
+            clearInterval(gameState.turnTimer);
             return;
         }
-
-        gameState.isAnswered = false;
-        const q = gameState.questions[gameState.currentIndex];
         
-        document.getElementById('flipCard').classList.remove('flipped', 'shake');
-        document.getElementById('baybayinWord').textContent = q.baybayin;
-        document.getElementById('hintEmoji').textContent = q.emoji;
-        document.getElementById('currentQ').textContent = gameState.currentIndex + 1;
-        document.getElementById('totalQ').textContent = gameState.totalQuestions;
+        gameState.turnTimeLeft--;
+        updateTurnDisplay();
+        
+        if (gameState.turnTimeLeft <= 0) {
+            clearInterval(gameState.turnTimer);
+            if (gameState.currentTurn === 'player') {
+                // Player time's up, AI makes a move
+                triggerAIMove();
+            }
+        }
+    }, 1000);
+}
 
-        // Generate 4 choices - 1 correct + 3 wrong
-        const wrongAnswers = QUESTION_BANK
-            .filter(item => item.answer !== q.answer)
-            .map(item => item.answer);
-        const shuffled = shuffle(wrongAnswers).slice(0, 3);
-        const options = shuffle([q.answer, ...shuffled]);
-
-        const optionsContainer = document.getElementById('optionsContainer');
-        optionsContainer.innerHTML = '';
-        options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-option py-4 px-4 rounded-xl font-semibold text-white text-base sm:text-lg';
-            btn.textContent = opt;
-            btn.addEventListener('click', () => selectAnswer(opt));
-            optionsContainer.appendChild(btn);
-        });
-
-        startTimer();
+function updateTurnDisplay() {
+    const minutes = Math.floor(gameState.turnTimeLeft / 60);
+    const seconds = gameState.turnTimeLeft % 60;
+    const display = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    const turnDisplay = document.getElementById('turnTimeDisplay');
+    turnDisplay.textContent = display;
+    
+    if (gameState.turnTimeLeft <= 10) {
+        turnDisplay.classList.add('timer-warning');
+    } else {
+        turnDisplay.classList.remove('timer-warning');
     }
+}
 
-    function startTimer() {
-        // Clear existing timer
-        if (gameState.timer) {
-            clearInterval(gameState.timer);
+function triggerAIMove() {
+    if (!gameState.gameActive) return;
+    
+    gameState.currentTurn = 'ai';
+    const turnDisplay = document.getElementById('turnTimer').querySelector('.text-amber-200');
+    turnDisplay.textContent = 'AI Turn';
+    
+    // AI makes a move immediately after timeout
+    const settings = AI_SETTINGS[gameState.aiDifficulty];
+    const delay = Math.random() * 500 + 500; // Small delay for visual effect
+    
+    gameState.aiMoveTimer = setTimeout(() => {
+        const remainingWords = gameState.words.filter(w => 
+            !gameState.foundWords.has(w.baybayin) && !gameState.aiFoundWords.has(w.baybayin)
+        );
+        
+        if (remainingWords.length > 0 && Math.random() < settings.accuracy) {
+            const word = remainingWords[Math.floor(Math.random() * remainingWords.length)];
+            findWordForAI(word.baybayin);
         }
+        
+        // Switch back to player turn
+        gameState.currentTurn = 'player';
+        turnDisplay.textContent = 'Turn Mo';
+        startTurnTimer();
+    }, delay);
+}
 
-        gameState.timeLeft = gameState.timePerQ;
-        gameState.totalTime = gameState.timePerQ;
-        updateTimerDisplay();
-
-        gameState.timer = setInterval(() => {
-            if (gameState.isAnswered) {
-                clearInterval(gameState.timer);
-                return;
+function findWordForAI(baybayinWord) {
+    // Find the word in grid
+    const size = gameState.gridSize;
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            for (const dir of GRID_DIRECTIONS) {
+                const chars = splitBaybayin(baybayinWord);
+                let match = true;
+                
+                for (let k = 0; k < chars.length; k++) {
+                    const r = i + dir[0] * k;
+                    const c = j + dir[1] * k;
+                    if (r < 0 || r >= size || c < 0 || c >= size || gameState.grid[r][c].char !== chars[k]) {
+                        match = false;
+                        break;
+                    }
+                }
+                
+                if (match) {
+                    // Highlight AI's selection
+                    gameState.selectedCells = [];
+                    for (let k = 0; k < chars.length; k++) {
+                        gameState.selectedCells.push({
+                            row: i + dir[0] * k,
+                            col: j + dir[1] * k
+                        });
+                    }
+                    markWordFound(baybayinWord, 'ai');
+                    return;
+                }
             }
-
-            gameState.timeLeft -= 0.1;
-            if (gameState.timeLeft <= 0) {
-                gameState.timeLeft = 0;
-                clearInterval(gameState.timer);
-                updateTimerDisplay();
-                selectAnswer(null); // Time out = wrong
-            } else {
-                updateTimerDisplay();
-            }
-        }, 100);
+        }
     }
+}
 
-    function updateTimerDisplay() {
-        const percent = Math.max(0, (gameState.timeLeft / gameState.totalTime) * 100);
-        const timerBar = document.getElementById('timerBar');
-        timerBar.style.width = percent + '%';
-        
-        if (percent < 40) {
-            timerBar.classList.add('warning');
-        } else {
-            timerBar.classList.remove('warning');
-        }
-        
-        document.getElementById('timerText').textContent = gameState.timeLeft.toFixed(1) + 's';
+function checkGameEnd() {
+    if (gameState.foundWords.size + gameState.aiFoundWords.size >= gameState.words.length) {
+        endGame();
     }
+}
 
-    function selectAnswer(selected) {
-        if (gameState.isAnswered) return;
-        gameState.isAnswered = true;
-        
-        if (gameState.timer) {
-            clearInterval(gameState.timer);
-            gameState.timer = null;
-        }
-        
-        const q = gameState.questions[gameState.currentIndex];
-        const isCorrect = selected === q.answer;
-        
-        // Disable all option buttons
-        document.querySelectorAll('.btn-option').forEach(btn => {
-            btn.disabled = true;
-        });
+function endGame() {
+    gameState.gameActive = false;
+    clearInterval(gameState.turnTimer);
+    clearTimeout(gameState.aiMoveTimer);
+    
+    const won = gameState.playerScore > gameState.aiScore || !gameState.vsAi;
+    const medal = won ? (gameState.playerScore >= gameState.wordCount * 0.8 ? 'gold' : 'silver') : 'bronze';
+    
+    showVictoryScreen(won, medal);
+}
 
-        const flipCard = document.getElementById('flipCard');
-        const feedbackEmoji = document.getElementById('feedbackEmoji');
-        const feedbackText = document.getElementById('feedbackText');
-        const feedbackSubtext = document.getElementById('feedbackSubtext');
-        const feedbackCard = document.getElementById('feedbackCard');
+function showVictoryScreen(won, medal) {
+    const medalColors = {
+        gold: 'text-yellow-400',
+        silver: 'text-gray-400',
+        bronze: 'text-orange-700'
+    };
+    
+    const medalIcons = {
+        gold: 'fa-medal',
+        silver: 'fa-medal',
+        bronze: 'fa-medal'
+    };
+    
+    document.getElementById('medalDisplay').innerHTML = `<i class="fas ${medalIcons[medal]} text-8xl medal ${medalColors[medal]}"></i>`;
+    
+    if (won) {
+        document.getElementById('victoryTitle').textContent = `Tagumpay, ${gameState.playerName}!`;
+        document.getElementById('victoryMessage').textContent = medal === 'gold' 
+            ? 'Napakagaling! Para kang si Lapu-Lapu sa labanan!' 
+            : 'Magaling! Nanalo ka sa laban!';
+        createConfetti();
+    } else {
+        document.getElementById('victoryTitle').textContent = 'Hindi pa ngayon...';
+        document.getElementById('victoryMessage').textContent = 'Natalo ka ng AI, pero pwede mo pang subukan ulit!';
+    }
+    
+    document.getElementById('finalPlayerScore').textContent = gameState.playerScore;
+    document.getElementById('finalAiScore').textContent = gameState.aiScore;
+    
+    if (!gameState.vsAi) {
+        document.getElementById('finalAiScoreContainer').style.display = 'none';
+    } else {
+        document.getElementById('finalAiScoreContainer').style.display = 'block';
+    }
+    
+    document.getElementById('gameScreen').classList.add('hidden');
+    document.getElementById('victoryScreen').classList.remove('hidden');
+}
 
-        if (isCorrect) {
-            gameState.score++;
-            gameState.streak++;
-            if (gameState.streak > gameState.maxStreak) {
-                gameState.maxStreak = gameState.streak;
-            }
-            
-            const item = REWARD_ITEMS[Math.floor(Math.random() * REWARD_ITEMS.length)];
-            gameState.items.push(item);
-            
-            feedbackEmoji.textContent = item;
-            feedbackEmoji.className = 'text-7xl mb-3 reward-pop';
-            feedbackText.textContent = 'Tama!';
-            feedbackText.className = 'text-2xl font-bold mb-2 gradient-text';
-            feedbackSubtext.textContent = `+1 ${item}`;
-            feedbackCard.style.background = 'linear-gradient(145deg, rgba(124, 58, 237, 0.2), rgba(6, 182, 212, 0.2))';
-            
-            // Confetti
-            if (typeof confetti !== 'undefined') {
-                confetti({
-                    particleCount: 50,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    colors: ['#7c3aed', '#06b6d4', '#ec4899']
-                });
-            }
-            
-            updateItemsDisplay();
-        } else {
-            gameState.streak = 0;
-            
-            const tease = TEASING_EMOJIS[Math.floor(Math.random() * TEASING_EMOJIS.length)];
-            feedbackEmoji.textContent = tease;
-            feedbackEmoji.className = 'text-7xl mb-3';
-            feedbackText.textContent = 'Mali!';
-            feedbackText.className = 'text-2xl font-bold mb-2 text-red-400';
-            feedbackSubtext.textContent = 'Try ulit!'; // NO ANSWER REVEAL - keeps it addictive
-            feedbackCard.style.background = 'linear-gradient(145deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.1))';
-            
-            flipCard.classList.add('shake');
-        }
-
-        flipCard.classList.add('flipped');
-        updateStats();
-
+function createConfetti() {
+    for (let i = 0; i < 50; i++) {
         setTimeout(() => {
-            gameState.currentIndex++;
-            loadQuestion();
-        }, isCorrect ? 1500 : 1200);
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 3000);
+        }, i * 30);
     }
+}
 
-    function updateStats() {
-        document.getElementById('score').textContent = gameState.score;
-        document.getElementById('streak').textContent = gameState.streak;
-        
-        const streakDisplay = document.getElementById('streakDisplay');
-        if (gameState.streak > 0) {
-            streakDisplay.classList.remove('hidden');
-        } else {
-            streakDisplay.classList.add('hidden');
-        }
+function resetGame() {
+    if (confirm('Sigurado ka bang gusto mong ulitin ang laban?')) {
+        clearInterval(gameState.turnTimer);
+        clearTimeout(gameState.aiMoveTimer);
+        startGame();
     }
+}
 
-    function updateItemsDisplay() {
-        const itemsBar = document.getElementById('itemsBar');
-        const itemsDisplay = document.getElementById('itemsDisplay');
-        
-        if (gameState.items.length > 0) {
-            itemsBar.classList.remove('hidden');
-            itemsDisplay.innerHTML = gameState.items
-                .map((item, i) => `<span class="text-2xl" style="animation: popIn 0.5s ${i * 0.05}s both">${item}</span>`)
-                .join('');
-        }
-    }
-
-    function endGame() {
-        if (gameState.timer) {
-            clearInterval(gameState.timer);
-            gameState.timer = null;
-        }
-
-        document.getElementById('gameScreen').classList.add('hidden');
-        document.getElementById('endScreen').classList.remove('hidden');
-        
-        const percentage = (gameState.score / gameState.totalQuestions) * 100;
-        let endEmoji = '😊';
-        if (percentage === 100) endEmoji = '🏆';
-        else if (percentage >= 80) endEmoji = '🌟';
-        else if (percentage >= 60) endEmoji = '👍';
-        else endEmoji = '💪';
-        
-        document.getElementById('endEmoji').textContent = endEmoji;
-        document.getElementById('finalScore').textContent = `${gameState.score}/${gameState.totalQuestions}`;
-        document.getElementById('correctCount').textContent = gameState.score;
-        document.getElementById('maxStreak').textContent = gameState.maxStreak;
-        document.getElementById('itemsCount').textContent = gameState.items.length;
-        
-        const finalItemsDisplay = document.getElementById('finalItemsDisplay');
-        finalItemsDisplay.innerHTML = gameState.items.length > 0 
-            ? gameState.items.map(item => `<span class="text-3xl">${item}</span>`).join('')
-            : '<span class="text-text-dim text-sm">Wala pang items</span>';
-        
-        if (percentage === 100) {
-            document.getElementById('perfectMsg').classList.remove('hidden');
-            document.getElementById('retryMsg').classList.add('hidden');
-            if (typeof confetti !== 'undefined') {
-                confetti({
-                    particleCount: 100,
-                    spread: 100,
-                    origin: { y: 0.6 }
-                });
-            }
-        } else {
-            document.getElementById('perfectMsg').classList.add('hidden');
-            document.getElementById('retryMsg').classList.remove('hidden');
-        }
-    }
-
-    function playAgain() {
-        startGame(gameState.mode);
-    }
-
-    function backToMenu() {
-        if (gameState.timer) {
-            clearInterval(gameState.timer);
-            gameState.timer = null;
-        }
-        document.getElementById('endScreen').classList.add('hidden');
-        document.getElementById('gameScreen').classList.add('hidden');
-        document.getElementById('modeScreen').classList.remove('hidden');
-    }
-
-    function quitGame() {
-        if (confirm('Sigurado ka bang aalis? Mawawala ang progress mo.')) {
-            if (gameState.timer) {
-                clearInterval(gameState.timer);
-                gameState.timer = null;
-            }
-            backToMenu();
-        }
-    }
-
-    // FIXED: Use proper event listeners instead of inline onclick
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('btnEasy').addEventListener('click', () => startGame('easy'));
-        document.getElementById('btnMedium').addEventListener('click', () => startGame('medium'));
-        document.getElementById('btnHard').addEventListener('click', () => startGame('hard'));
-        document.getElementById('btnQuit').addEventListener('click', quitGame);
-        document.getElementById('btnPlayAgain').addEventListener('click', playAgain);
-        document.getElementById('btnMenu').addEventListener('click', backToMenu);
-    });
+initGame();
 </script>
 <script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
 </body>
